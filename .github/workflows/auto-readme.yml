@@ -1,4 +1,4 @@
-name: Auto Generate README
+name: AI Generate README
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 jobs:
-  generate:
+  readme:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,10 +18,12 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run README generator
-        run: node scripts/generate-readme.js
+      - run: npm install openai
 
-      - name: Commit README
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - run: node scripts/ai-readme.js
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs: auto-generate README"
+          commit_message: "docs: AI-generate README"
